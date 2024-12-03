@@ -6,9 +6,13 @@ const userSchema = new Schema(
     email: { type: String, required: true },
     profileImg: { type: String },
     post: [{ type: mongoose.Types.ObjectId, ref: "post", required: true }],
-    followers: { type: mongoose.Types.ObjectId, ref: "users", required: true },
-    following: { type: mongoose.Types.ObjectId, ref: "users", required: true },
-    liked: { type: mongoose.Types.ObjectId, ref: "likes", required: true },
+    followers: [
+      { type: mongoose.Types.ObjectId, ref: "users", required: true },
+    ],
+    following: [
+      { type: mongoose.Types.ObjectId, ref: "users", required: true },
+    ],
+    liked: [{ type: mongoose.Types.ObjectId, ref: "likes", required: true }],
   },
   { timeStamps: true }
 );
