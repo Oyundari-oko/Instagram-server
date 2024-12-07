@@ -3,7 +3,7 @@ const commentModel = require("../models/commentSchema");
 const userModel = require("../models/userSchema");
 const postSchema = new Schema({
   caption: { type: String, required: true },
-  postImg: { type: String, required: true },
+  postImg: [{ type: String, required: true }],
   userId: { type: mongoose.Types.ObjectId, ref: "users", required: true },
   liked: { type: mongoose.Types.ObjectId, ref: "likes" },
   // like: { type: mongoose.Types.ObjectId, ref: "likes", required: true },
