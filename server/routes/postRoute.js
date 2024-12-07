@@ -43,4 +43,16 @@ userPost.get("/posts", async (req, res) => {
   res.send(posts);
 });
 
+userPost.get("/post/postId", async (req, res) => {
+  const { postUserId } = req.query;
+  const response = await postModel.find(postUserId).populate({
+    path: "comments",
+    populate: {
+      path: "userId",
+      select: "username profileImg",
+    },
+  });
+  res.send(response);
+});
+
 module.exports = userPost;
