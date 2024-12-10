@@ -69,8 +69,11 @@ userPost.get("/post/postId", async (req, res) => {
 
 userPost.get("/comments/:postId", async (req, res) => {
   const { postId } = req.params;
+
   try {
-    const comments = await commentModel.find({ postId }).populate("userId");
+    const comments = await commentModel
+      .find({ postUserId: postId })
+      .populate("userId");
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).send(error);
