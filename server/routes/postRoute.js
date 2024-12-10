@@ -56,11 +56,21 @@ userPost.get("/post/postId", async (req, res) => {
   res.send(response);
 });
 
-userPost.get("/commentsPost", async (req, res) => {
+// userPost.get("/commentsPost", async (req, res) => {
+//   try {
+//     const comments = await commentModel
+//       .find()
+//       .populate("comments", "postUserId  userId");
+//     res.status(200).json(comments);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+
+userPost.get("/comments/:postId", async (req, res) => {
+  const { postId } = req.params;
   try {
-    const comments = await postModel
-      .find()
-      .populate("comments", "postUserId comments userId");
+    const comments = await commentModel.find({ postId }).populate("userId");
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).send(error);
