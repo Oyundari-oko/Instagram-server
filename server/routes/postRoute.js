@@ -22,6 +22,7 @@ userPost.post("/post/creat", async (req, res) => {
   res.send(result);
 });
 userPost.post("/commented/post", comment);
+
 userPost.get("/comments", async (req, res) => {
   const getComment = await commentModel
     .find()
@@ -53,6 +54,17 @@ userPost.get("/post/postId", async (req, res) => {
     },
   });
   res.send(response);
+});
+
+userPost.get("/commentsPost", async (req, res) => {
+  try {
+    const comments = await postModel
+      .find()
+      .populate("comments", "postUserId comments userId");
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 module.exports = userPost;
