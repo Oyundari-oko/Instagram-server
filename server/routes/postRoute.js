@@ -4,6 +4,8 @@ const userModel = require("../models/userSchema");
 const comment = require("../controllers/createCommentController");
 const commentModel = require("../models/commentSchema");
 const post = require("../controllers/postController");
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../auth-Middleware");
 // const like = require("../controllers/likeController");
 const userPost = Router();
 userPost.post("/post", post);
@@ -30,18 +32,29 @@ userPost.get("/comments", async (req, res) => {
   res.send(getComment);
 });
 
-userPost.get("/posts", async (req, res) => {
-  const posts = await postModel
-    .find()
-    .populate("userId", "email username _id")
-    .populate({
-      path: "liked",
-      populate: {
-        path: "userId",
-        select: "username profileImg",
-      },
-    });
-  res.send(posts);
+userPost.get("/posts", authMiddleware, async (req, res) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader.split(" ")[1];
+  if (!authHeader) res.json({ message: "no token in header" });
+  console.log(token);
+
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decodedToken);
+  try {
+    const posts = await postModel
+      .find()
+      .populate("userId", "email username _id")
+      .populate({
+        path: "liked",
+        populate: {
+          path: "userId",
+          select: "username profileImg",
+        },
+      });
+    res.send(posts);
+  } catch (error) {
+    res.send(404).json({ message: `failed to get posts, ${error}` });
+  }
 });
 
 userPost.get("/post/postId", async (req, res) => {

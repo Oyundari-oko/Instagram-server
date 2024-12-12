@@ -1,19 +1,29 @@
 const userModel = require("../models/userSchema");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const signUpUser = async (req, res) => {
+  const { username, password, email } = req.body;
+  const saltRounds = 10;
   try {
-    const { username, password, email, profileImg } = req.body;
-    console.log(req.body);
+    const hashpassword = await bcrypt.hash(password, saltRounds);
     const response = await userModel.create({
       username,
-      password,
       email,
-      profileImg,
+      password: hashpassword,
     });
-    console.log(response);
-    res.send(response);
+    const token = jwt.sign(
+      {
+        userId: response._id,
+        username: response.username,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "12h" }
+    );
+
+    res.send({ token });
   } catch (error) {
     console.log(error);
-    res.send("not Signup");
+    res.send(`not Signup ${error}`);
   }
 };
 module.exports = signUpUser;
