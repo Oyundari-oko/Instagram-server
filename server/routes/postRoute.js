@@ -5,7 +5,7 @@ const comment = require("../controllers/createCommentController");
 const commentModel = require("../models/commentSchema");
 const post = require("../controllers/postController");
 const jwt = require("jsonwebtoken");
-const authMiddleware = require("../auth-Middleware");
+const authMiddleware = require("../middlewares/authToken");
 // const like = require("../controllers/likeController");
 const userPost = Router();
 userPost.post("/post", post);
